@@ -10,15 +10,13 @@
     "host_permissions": [
         "https://udemy-accent-remover-production.up.railway.app/*"
     ],
-    "background": {
-        "service_worker": "background.js"
-    },
     "action": {
+        "default_popup": "popup.html",
         "default_icon": "icon.png"
     },
     "content_scripts": [
         {
-            "matches": ["<all_urls>"],
+            "matches": ["*://*.udemy.com/course/*"],
             "js": ["content.js"]
         }
     ],
