@@ -1,0 +1,37 @@
+name: Deploy Serverless Function
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'serverless/**'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Google Cloud SDK
+      uses: google-github-actions/setup-gcloud@v0.2.0
+      with:
+        project_id: ${{ secrets.GCP_PROJECT_ID }}
+        service_account_key: ${{ secrets.GCP_SA_KEY }}
+        export_default_credentials: true
+
+    - name: Install dependencies
+      run: npm install
+      working-directory: ./serverless
+
+    - name: Deploy to Google Cloud Functions
+      run: |
+        gcloud functions deploy synthesize-speech \
+          --entry-point synthesize-speech \
+          --runtime nodejs18 \
+          --trigger-http \
+          --allow-unauthenticated \
+          --region us-central1
+      working-directory: ./serverless
